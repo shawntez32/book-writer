@@ -1,0 +1,413 @@
+#:import utils kivy.utils
+#:import hex kivy.utils.get_color_from_hex
+#:import Factory kivy.factory.Factory
+
+<MySpinnerOption@SpinnerOption>:
+    background_normal: ''
+    background_color:   hex('#4FAAFA')  # blue colour
+    background_down: ''
+
+Manager:
+    sd:hp.sd
+    ec:hp.ec
+    Login:
+        id:log
+    Register:
+        id:reg
+    Homepage:
+        id:hp
+    CreateBook:
+        id:cb
+
+<CreateBook>:
+    name:"cb"
+    bt:book_title
+    canvas.before:
+        Color:
+            rgba: hex('#9396B2')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source:"bookart.jfif"
+
+    GridLayout:
+        cols:3
+
+        BoxLayout:
+            size_hint: .27,1
+            orientation: "vertical"
+
+        BoxLayout:
+            size_hint: .46,1
+            orientation: "vertical"
+
+            GridLayout:
+                cols:1
+
+                Label:
+                    text:"Book-Maker!"
+                    font_size:28
+
+                Label:
+                    text:"New Book Title!"
+
+                TextInput:
+                    id:book_title
+                    multiline: False
+
+                Button:
+                    text: "Create Book"
+                    background_normal: ''
+                    background_color: hex("#4FAAFA")
+                    on_press:app.add_book(book_title.text)
+
+                TextInput:
+                    id:chap_title
+                    multiline: False
+
+                Button:
+                    text: "Create Chapter"
+                    background_normal: ''
+                    background_color: hex("#4FAAFA")
+                    on_press:app.add_chapter(book_title.text,chapter_title.text)
+
+
+        BoxLayout:
+            size_hint: .27,1
+            orientation: "vertical"
+
+            GridLayout:
+                cols:1
+
+                Button:
+                    text:"Book-Editor!"
+                    background_normal: ''
+                    background_color: hex("#4FAAFA")
+                    size_hint_y: None
+                    height: 30
+                    on_press: app.root.current = 'hp'
+
+
+                Button:
+                    text:"Book Preview!"
+                    background_normal: ''
+                    background_color: hex("#4FAAFA")
+                    size_hint_y: None
+                    height:30
+
+
+
+<Register>:
+    name:"register"
+    canvas.before:
+        Color:
+            rgba: hex('#4FAAFA')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source:"bookart.jfif"
+
+    GridLayout:
+        cols:1
+
+        Label:
+            text:"First Name:"
+
+        TextInput:
+            id:fname
+            multiline:False
+
+        Label:
+            text:"Last Name:"
+
+        TextInput:
+            id:lname
+            multiline:False
+
+        Label:
+            text:"Username:"
+
+        TextInput:
+            id:uname
+            multiline:False
+
+        Label:
+            text:"Email:"
+
+        TextInput:
+            id:email
+            multiline:False
+
+        Label:
+            text:"Password:"
+
+        TextInput:
+            id:pword
+            multiline:False
+
+        Button:
+            text:"Submit"
+            background_normal: ''
+            background_color: hex("#4FAAFA")
+            on_press:
+                app.reg(fname.text,lname.text,uname.text,email.text,pword.text)
+                app.root.current = "login"
+
+<Login>:
+    name:'login'
+    canvas.before:
+        Color:
+            rgba: hex('#4FAAFA')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source:"writer.jpg"
+
+
+    GridLayout:
+        cols:3
+
+        GridLayout:
+            cols:1
+            size_hint_x:0.15
+
+        GridLayout:
+            cols:1
+            rows:5
+
+            GridLayout:
+                cols:1
+                size_hint_y:0.1
+
+            GridLayout:
+                cols:1
+                size_hint_y:0.2
+
+                Label:
+                    text:"Book-Maker!"
+                    font_size:28
+
+            GridLayout:
+                cols:2
+                size_hint_y:0.4
+
+                Label:
+                    text:'E-mail:'
+                    font_size:20
+
+                TextInput:
+                    id:email
+                    multiline:False
+                    size_hint_y:None
+                    height:60
+
+                Label:
+                    text:'Password:'
+                    font_size:20
+
+                TextInput:
+                    id:pword
+                    multiline:False
+                    size_hint_y:None
+                    height:60
+                    password:True
+
+            GridLayout:
+                cols:2
+                size_hint_y:0.2
+
+                Button:
+                    text:'Submit'
+                    on_press: app.verified(email.text,pword.text)
+                    size_hint_x:.35
+                    size_hint_y:.5
+                    background_color:1,1,1,0.2
+
+                Button:
+                    text:'Sign-up'
+                    on_press: app.root.current = "register"
+                    size_hint_x:.35
+                    size_hint_y:.5
+                    background_color:1,1,1,0.2
+
+            GridLayout:
+                size_hint_y:0.1
+                cols:1
+
+        GridLayout:
+            cols:1
+            size_hint_x:0.15
+
+<Homepage>:
+    name:'hp'
+    sd:selected_data
+    ec:edit_content
+    canvas.before:
+        Color:
+            rgba: hex('#4FAAFA')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source:"bookart.jfif"
+
+    GridLayout:
+        cols:3
+
+        BoxLayout:
+            orientation:'vertical'
+            size_hint:.25,1
+
+            GridLayout:
+                cols:1
+
+
+                Spinner:
+                    id:book_name
+                    text:'Books'
+                    values:app.books
+                    size_hint_y:None
+                    size_hint_x:None
+                    height:40
+                    width: 200
+                    background_normal: ''
+                    background_color: hex("#6998AB")
+                    option_cls: Factory.get("MySpinnerOption")
+                    on_text: app.sel_book(book_name)
+
+                Spinner:
+                    id:chap_name
+                    text:'Chapters'
+                    values:app.chapters
+                    size_hint_y:None
+                    size_hint_x:None
+                    height:40
+                    width: 200
+                    background_normal: ''
+                    background_color: hex("#6998AB")
+                    option_cls: Factory.get("MySpinnerOption")
+                    on_text:app.sel_chapter(chap_name)
+
+                Spinner:
+                    id:content
+                    text:'Note'
+                    values:app.book_objects
+                    size_hint_y:None
+                    size_hint_x:None
+                    height:40
+                    width: 200
+                    background_normal: ''
+                    background_color: hex('#6998AB')
+                    option_cls: Factory.get("MySpinnerOption")
+                    on_text:app.select(content.text)
+
+
+        BoxLayout:
+            orientation:'vertical'
+            size_hint:.5,1
+
+            GridLayout:
+                cols:1
+
+                Label:
+                    text:'Title'
+                    size_hint:.7,.05
+
+                TextInput:
+                    multiline:False
+                    size_hint:.6,.075
+                    font_size:28
+                    canvas.before:
+                        Color:
+                            rgba: .5, .5, .5, 1
+                        Line:
+                            width: 4
+                            rectangle: self.x, self.y, self.width, self.height
+
+                Label:
+                    text:'Content'
+                    size_hint:.7,.05
+
+
+
+                TextInput:
+                    id:edit_content
+                    size_hint:.6,.6
+                    canvas.before:
+                        Color:
+                            rgba: .5, .5, .5, 1
+                        Line:
+                            width: 4
+                            rectangle: self.x, self.y, self.width, self.height
+
+
+        BoxLayout:
+            size_hint:.25,1
+
+
+            BoxLayout:
+                orientation:'vertical'
+                size_hint_x:.5
+
+            BoxLayout:
+                orientation:'vertical'
+                size_hint_x:.5
+
+                GridLayout:
+                    cols:1
+
+                    Button:
+                        text:'Edit'
+                        size_hint_y:None
+                        size_hint_x:None
+                        height:40
+                        width: 200
+                        background_normal: ''
+                        background_color: hex('#6998AB')
+
+
+
+
+                    Button:
+                        text:'Add'
+                        size_hint_y:None
+                        size_hint_x:None
+                        height:40
+                        width: 200
+                        background_normal: ''
+                        background_color: hex('#6998AB')
+                        on_press:app.add_chapter(book_name.text,chap_name.text)
+                        on_release:app.add(content.text)
+
+                    Button:
+                        text:'Delete'
+                        size_hint_y:None
+                        size_hint_x:None
+                        height:40
+                        width: 200
+                        background_normal: ''
+                        background_color: hex('#6998AB')
+                        on_press:app.delete(book_name.text,chap_name.text,content.text)
+
+                    GridLayout:
+                        cols:2
+
+                        GridLayout:
+                            cols:1
+                            size_hint:.85,.6
+
+                            TextInput:
+                                id:selected_data
+                                multiline:True
+                                size_hint:1,1
+
+                        GridLayout:
+                            cols:1
+                            size_hint:.25,.6
+
+                            Slider:
+                                orientation:'vertical'
+                                size_hint_x:None
+                                size_hint_y:1
+                                width:50
+                                step:1
+                                background_width:100
