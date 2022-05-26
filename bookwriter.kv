@@ -1,11 +1,26 @@
 #:import utils kivy.utils
 #:import hex kivy.utils.get_color_from_hex
 #:import Factory kivy.factory.Factory
+# Colors[background:E4F9FF,secondary:12CAD6,widgets:FA1616,outline:0FABBC]
 
 <MySpinnerOption@SpinnerOption>:
     background_normal: ''
-    background_color:   hex('#4FAAFA')  # blue colour
+    background_color:   hex('#FA1616')  # blue colour
     background_down: ''
+
+<GButton@Button>:
+    background_normal: ''
+    background_color: hex('#FA1616')
+    canvas.before:
+        Color:
+            rgba: hex('#0FABBC')
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    size_hint_y:None
+    size_hint_x:None
+    height:40
+    width: 200
 
 Manager:
     sd:hp.sd
@@ -24,84 +39,124 @@ Manager:
     bt:book_title
     canvas.before:
         Color:
-            rgba: hex('#9396B2')
+            rgba: hex('#E4F9FF')
         Rectangle:
             pos: self.pos
             size: self.size
-            source:"bookart.jfif"
 
     GridLayout:
         cols:3
 
         BoxLayout:
-            size_hint: .27,1
+            size_hint: .22,1
             orientation: "vertical"
-
-        BoxLayout:
-            size_hint: .46,1
-            orientation: "vertical"
-
-            GridLayout:
-                cols:1
-
-                Label:
-                    text:"Book-Maker!"
-                    font_size:28
-
-                Label:
-                    text:"New Book Title!"
-
-                TextInput:
-                    id:book_title
-                    multiline: False
-
-                Button:
-                    text: "Create Book"
-                    background_normal: ''
-                    background_color: hex("#4FAAFA")
-                    on_press:app.add_book(book_title.text)
-
-                TextInput:
-                    id:chap_title
-                    multiline: False
-
-                Button:
-                    text: "Create Chapter"
-                    background_normal: ''
-                    background_color: hex("#4FAAFA")
-                    on_press:app.add_chapter(book_title.text,chapter_title.text)
 
 
         BoxLayout:
-            size_hint: .27,1
+            size_hint: .56,1
             orientation: "vertical"
+            canvas.before:
+                Color:
+                    rgba: hex('#12CAD6')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source:"writer.jpg"
 
             GridLayout:
                 cols:1
+                rows:3
 
-                Button:
-                    text:"Book-Editor!"
-                    background_normal: ''
-                    background_color: hex("#4FAAFA")
-                    size_hint_y: None
-                    height: 30
-                    on_press: app.root.current = 'hp'
+                GridLayout:
+                    cols:1
+                    size_hint_y:0.2
+
+                GridLayout:
+                    cols:1
+                    rows:3
+                    size_hint_y:0.6
+
+                    Label:
+                        size_hint_y:0.25
+                        text:"Book-Maker!"
+                        font_size:28
+
+                    GridLayout:
+                        cols:2
+                        size_hint_y:0.6
+
+                        Label:
+                            text:"New Book Title!"
+
+                        TextInput:
+                            id:book_title
+                            multiline: False
+
+                        Label:
+                            text:'Chapter Title'
+
+                        TextInput:
+                            id:chap_title
+                            multiline: False
+
+                    GridLayout:
+                        cols:1
+                        size_hint_y:0.15
+
+                        Button:
+                            text: "Create Book"
+                            background_normal: ''
+                            background_color: hex("#12CAD6")
+                            on_press:app.add_book(book_title.text,chap_title.text)
+
+                GridLayout:
+                    cols:1
+                    size_hint_y:0.2
+
+        BoxLayout:
+            size_hint: .22,1
+            orientation: "vertical"
 
 
-                Button:
-                    text:"Book Preview!"
-                    background_normal: ''
-                    background_color: hex("#4FAAFA")
-                    size_hint_y: None
-                    height:30
+            GridLayout:
+                cols:2
+
+                GridLayout:
+                    cols:1
+                    size_hint_x:0.75
+
+                GridLayout:
+                    cols:1
+                    size_hint_x:0.25
+
+                    AnchorLayout:
+                        anchor_x: 'right'
+                        anchor_y: 'top'
+
+                        GridLayout:
+                            cols:1
+
+                            GButton:
+                                text:"Edit Book"
+                                size_hint_y: None
+                                size_hint_x: None
+                                width: 120
+                                height: 60
+                                on_press: app.pickpage()
 
 
+                            GButton:
+                                text:"View Books"
+                                size_hint_y: None
+                                height:60
+                                size_hint_x: None
+                                width: 120
 
 <Register>:
     name:"register"
     canvas.before:
         Color:
-            rgba: hex('#4FAAFA')
+            rgba: hex('#E4F9FF')
         Rectangle:
             pos: self.pos
             size: self.size
@@ -148,7 +203,7 @@ Manager:
         Button:
             text:"Submit"
             background_normal: ''
-            background_color: hex("#4FAAFA")
+            background_color: hex("#FDB827")
             on_press:
                 app.reg(fname.text,lname.text,uname.text,email.text,pword.text)
                 app.root.current = "login"
@@ -157,7 +212,7 @@ Manager:
     name:'login'
     canvas.before:
         Color:
-            rgba: hex('#4FAAFA')
+            rgba: hex('#E4F9FF')
         Rectangle:
             pos: self.pos
             size: self.size
@@ -214,24 +269,24 @@ Manager:
 
             GridLayout:
                 cols:2
-                size_hint_y:0.2
+                size_hint_y:0.1
 
-                Button:
+                GButton:
                     text:'Submit'
                     on_press: app.verified(email.text,pword.text)
-                    size_hint_x:.35
-                    size_hint_y:.5
+                    size_hint_x:.25
+                    size_hint_y:.35
                     background_color:1,1,1,0.2
 
-                Button:
+                GButton:
                     text:'Sign-up'
                     on_press: app.root.current = "register"
-                    size_hint_x:.35
-                    size_hint_y:.5
+                    size_hint_x:.25
+                    size_hint_y:.35
                     background_color:1,1,1,0.2
 
             GridLayout:
-                size_hint_y:0.1
+                size_hint_y:0.2
                 cols:1
 
         GridLayout:
@@ -244,11 +299,10 @@ Manager:
     ec:edit_content
     canvas.before:
         Color:
-            rgba: hex('#4FAAFA')
+            rgba: hex('#E4F9FF')
         Rectangle:
             pos: self.pos
             size: self.size
-            source:"bookart.jfif"
 
     GridLayout:
         cols:3
@@ -256,6 +310,13 @@ Manager:
         BoxLayout:
             orientation:'vertical'
             size_hint:.25,1
+            canvas.before:
+                Color:
+                    rgba: hex('#12CAD6')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
 
             GridLayout:
                 cols:1
@@ -270,7 +331,7 @@ Manager:
                     height:40
                     width: 200
                     background_normal: ''
-                    background_color: hex("#6998AB")
+                    background_color: hex("#FA1616")
                     option_cls: Factory.get("MySpinnerOption")
                     on_text: app.sel_book(book_name)
 
@@ -283,7 +344,7 @@ Manager:
                     height:40
                     width: 200
                     background_normal: ''
-                    background_color: hex("#6998AB")
+                    background_color: hex("#FA1616")
                     option_cls: Factory.get("MySpinnerOption")
                     on_text:app.sel_chapter(chap_name)
 
@@ -296,7 +357,7 @@ Manager:
                     height:40
                     width: 200
                     background_normal: ''
-                    background_color: hex('#6998AB')
+                    background_color: hex('#FA1616')
                     option_cls: Factory.get("MySpinnerOption")
                     on_text:app.select(content.text)
 
@@ -342,6 +403,12 @@ Manager:
 
         BoxLayout:
             size_hint:.25,1
+            canvas.before:
+                Color:
+                    rgba: hex('#12CAD6')
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
 
             BoxLayout:
@@ -355,37 +422,16 @@ Manager:
                 GridLayout:
                     cols:1
 
-                    Button:
+                    GButton:
                         text:'Edit'
-                        size_hint_y:None
-                        size_hint_x:None
-                        height:40
-                        width: 200
-                        background_normal: ''
-                        background_color: hex('#6998AB')
 
-
-
-
-                    Button:
+                    GButton:
                         text:'Add'
-                        size_hint_y:None
-                        size_hint_x:None
-                        height:40
-                        width: 200
-                        background_normal: ''
-                        background_color: hex('#6998AB')
                         on_press:app.add_chapter(book_name.text,chap_name.text)
                         on_release:app.add(content.text)
 
-                    Button:
+                    GButton:
                         text:'Delete'
-                        size_hint_y:None
-                        size_hint_x:None
-                        height:40
-                        width: 200
-                        background_normal: ''
-                        background_color: hex('#6998AB')
                         on_press:app.delete(book_name.text,chap_name.text,content.text)
 
                     GridLayout:
@@ -393,16 +439,29 @@ Manager:
 
                         GridLayout:
                             cols:1
-                            size_hint:.85,.6
+                            size_hint:.75,.6
 
                             TextInput:
                                 id:selected_data
                                 multiline:True
                                 size_hint:1,1
+                                canvas.before:
+                                    Color:
+                                        rgba: .5, .5, .5, 1
+                                    Line:
+                                        width: 2
+                                        rectangle: self.x, self.y, self.width, self.height
 
                         GridLayout:
                             cols:1
                             size_hint:.25,.6
+                            canvas.before:
+                                Color:
+                                    rgba: hex('#12CAD6')
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
 
                             Slider:
                                 orientation:'vertical'
@@ -411,3 +470,9 @@ Manager:
                                 width:50
                                 step:1
                                 background_width:100
+                                canvas.before:
+                                    Color:
+                                        rgba: .5, .5, .5, 1
+                                    Line:
+                                        width: 2
+                                        rectangle: self.x, self.y, self.width, self.height
