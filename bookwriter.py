@@ -1,6 +1,3 @@
-import sqlite3 as sql
-import pandas as pd
-import datetime as dt
 import kivy
 from kivy.lang import Builder
 from kivy.app import App
@@ -14,6 +11,7 @@ from kivy.uix.spinner import Spinner, SpinnerOption
 from kivy.uix.dropdown import DropDown
 from kivy.uix.slider import Slider
 from bookwriter_backend import *
+from books import *
 
 
 class Homepage(Screen):
@@ -42,6 +40,7 @@ class BookWriterApp(App):
     chapter = StringProperty('')
 
     def pickpage(self):
+        self.books = load_books()
         self.root.current = 'hp'
 
     def reg(self,fname,lname,uname,email,pword):
@@ -61,12 +60,16 @@ class BookWriterApp(App):
             user_input = (email + pword)
             if x == user_input:
                 self.user = email
-                self.root.current = 'hp'
+                self.root.current = 'cb'
                 self.books = choose_book(email)
                 self.chapters = choose_chapter(self.user,self.book)
 
-    def add_book(self,book_title):
-        create_book(self.user,book_title)
+    def add_book(self,book_title,chapterTitle):
+        p = ''
+        n = ''
+        new_book(book_title,chapterTitle,p,n)
+        self.books = load_books()
+        self.root.current = 'hp'
 
     def add_chapter(self,book_title,chapter_title):
         if chapter_title == 'Create Chapter':
@@ -93,13 +96,7 @@ class BookWriterApp(App):
             self.root.current = 'cb'
 
     def sel_chapter(self,chapter_title):
-        try:
-            self.chapters = choose_chapter(self.user,self.book)
-        except Exception as e:
-            if self.chapters == 'Create Chapter':
-                pass
-            else:
-                self.chapters = chapter_title.text
+        self.chapter = load_chapter(self.book,chapter_title)
 
 
     def select(self,content):
