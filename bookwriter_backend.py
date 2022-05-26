@@ -166,5 +166,3 @@ def delete_note(uname,book,chapter_link):
     cur.execute("DELETE FROM Note_content where Note_num=?",(id))
     conn.commit()
     conn.close()
-
-print(dir(json))
