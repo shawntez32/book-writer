@@ -1,6 +1,9 @@
 import sqlite3
 import pandas as pd
 import datetime as dt
+import json
+
+#Mo
 
 now = dt.datetime.now()
 today = dt.date(now.year,now.month,now.day)
@@ -11,11 +14,13 @@ chapter_paragraphs = []
 chapter_notes = []
 chapter_sources = []
 
+
+#CREATE DATABASE ENTRY
 def create_user(fname,lname,uname,email,pword):
     fname,lname,uname,email,pword = fname,lname,uname,email,pword
     conn = sqlite3.connect('book_users6.db')
     cur = conn.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Users(Fname TEXT,Lname TEXT,Username TEXT,Email TEXT, Pword TEXT)''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS Users(id AUTO INT PRIMARY KEY, Fname TEXT,Lname TEXT,Username TEXT,Email TEXT, Pword TEXT)''')
     cur.execute("INSERT INTO Users(Fname,Lname,Username,Email,Pword) VALUES(?,?,?,?,?)",(fname,lname,uname,email,pword))
     conn.commit()
     conn.close()
@@ -24,7 +29,7 @@ def create_book(uname,title):
     date_created = today
     conn = sqlite3.connect(f'{uname}-{title}.db')
     cur = conn.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Bookcontentz(BookTitle TEXT,Date TEXT)''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS Bookcontentz(id AUTO INT PRIMARY KEY,BookTitle TEXT,Date TEXT)''')
     cur.execute("INSERT INTO Bookcontentz(BookTitle,Date) VALUES(?,?)",(title,date_created))
     conn.commit()
     conn.close()
@@ -33,12 +38,12 @@ def create_chapter(uname,book,title):
     date_created = today
     conn = sqlite3.connect(f'{uname}-{book}.db')
     cur = conn.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Chapter_content(Chapter TEXT,Chapter_title TEXT,Date TEXT)''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS Chapter_content(id AUTO INT PRIMARY KEY,Chapter TEXT,Chapter_title TEXT,Date TEXT)''')
     cur.execute("SELECT * FROM Chapter_content")
     row = cur.fetchall()
     try:
         chap_num = len(rows) + 1
-        cur.execute("INSERT INTO Chapter_content(Chapter,Chapter_title,Date) VALUES(?,?,?)",(chap_num,title,date_created))
+        cur.execute("INSERT INTO Chapter_content(id AUTO INT PRIMARY KEY,Chapter,Chapter_title,Date) VALUES(?,?,?)",(chap_num,title,date_created))
         conn.commit()
         conn.close()
     except Exception as e:
@@ -51,7 +56,7 @@ def create_paragraph(uname,book,paragraph,chapter_link):
     date_created = today
     conn = sqlite3.connect(f'{uname}-{book}.db')
     cur = conn.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Parag_content(Par_num INT,Paragraph TEXT,Date TEXT)''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS Parag_content(id AUTO INT PRIMARY KEY,Par_num INT,Paragraph TEXT,Date TEXT)''')
     cur.execute("SELECT * FROM Parag_content")
     rows = cur.fetchall()
     try:
@@ -66,17 +71,19 @@ def create_note(uname,book,note,chapter_link):
     date_created = today
     conn = sqlite3.connect(f'{uname}-{book}.db')
     cur = conn.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Note_content(Note_num INT PRIMARY KEY,Note TEXT,Date TEXT)''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS Note_content(id AUTO INT PRIMARY KEY,Note_num INT PRIMARY KEY,Note TEXT,Date TEXT)''')
     cur.execute("SELECT * FROM Note_content")
     rows = cur.fetchall()
     try:
         note_num = len(rows) + 1
     except Exception as e:
         note_num = 1
-    cur.execute("INSERT INTO Note_content(Note_num,Note,Date) VALUES(?,?)",(note_num,paragraph,date_created))
+    cur.execute("INSERT INTO Note_content(Note_num,Note,Date) VALUES(?,?,?)",(note_num,paragraph,date_created))
     conn.commit()
     conn.close()
 
+
+#READ DATABASE ENTRY
 def choose_book(uname):
     f = ['book1']
     conn = sqlite3.connect(f'{uname}-books.db')
@@ -129,6 +136,8 @@ def select_note(uname,book,chapter_link):
     conn.close()
     return note
 
+
+#UPDATE DATABASE ENTRY
 def edit_paragraph(uname,book,chapter_link,id,new_content):
     conn = sqlite3.connect(f'{uname}-{book}.db')
     cur = conn.cursor()
@@ -143,6 +152,7 @@ def edit_note(uname,book,chapter_link,id,new_content):
     conn.commit()
     conn.close()
 
+#DELETE DATABASE ENTRY
 def delete_paragraph(uname,book,chapter_link,id):
     conn = sqlite3.connect(f'{uname}-{book}.db')
     cur = conn.cursor()
@@ -156,3 +166,5 @@ def delete_note(uname,book,chapter_link):
     cur.execute("DELETE FROM Note_content where Note_num=?",(id))
     conn.commit()
     conn.close()
+
+print(dir(json))
